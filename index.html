@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Productivity Destroyer</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        #taskList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #taskList li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        #taskList li.completed {
+            text-decoration: line-through;
+            color: #008800;
+        }
+
+        #discombobulate,
+        #recombobulate,
+        #clear,
+        #minesweeper {
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+
+        input,
+        button {
+            background-color: #001100;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            margin-right: 5px;
+        }
+
+        #discombobulateMessage {
+            display: none;
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            font-size: 20px;
+            color: #00ff00;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        #leftRain {
+            left: 0;
+        }
+
+        #rightRain {
+            right: 0;
+        }
+
+        #content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ff00;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .delete-btn {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="leftRain" class="matrix-rain"></div>
+    <div id="rightRain" class="matrix-rain"></div>
+    <div id="content">
+        <h1>Your Questionable To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Enter a task (or don't, who cares)">
+        <button onclick="addTask()">Add Task</button>
+        <h2>Tasks (if you bothered to add any):</h2>
+        <ul id="taskList"></ul>
+        <p id="chaos"></p>
+        <button id="discombobulate" onclick="discombobulate()">Discombobulate</button>
+        <button id="recombobulate" onclick="recombobulate()">Recombobulate</button>
+        <button id="clear" onclick="clearTasks()">Clear All Tasks</button>
+        <button id="minesweeper" onclick="launchMinesweeper()">Minesweeper</button>
+        <div id="discombobulateMessage"></div>
+    </div>
+
+    <script>
+        function addTask() {
+            var input = document.getElementById("taskInput");
+            var task = input.value;
+            if (task === "") {
+                alert("Wow, an empty task. How ambitious of you.");
+                return;
+            }
+            var li = document.createElement("li");
+            li.innerHTML = task + '<span class="delete-btn" onclick="deleteTask(this)">🗑️</span>';
+            li.onclick = function (e) {
+                if (e.target !== this) return; // Ignore clicks on delete button
+                this.classList.toggle('completed');
+                updateChaos();
+            };
+            document.getElementById("taskList").appendChild(li);
+            input.value = "";
+            updateChaos();
+        }
+
+        function deleteTask(btn) {
+            btn.parentElement.remove();
+            updateChaos();
+        }
+
+        function clearTasks() {
+            document.getElementById("taskList").innerHTML = "";
+            updateChaos();
+        }
+
+        function updateChaos() {
+            var completedTasks = document.querySelectorAll('#taskList li.completed').length;
+            var chaos = Math.floor(Math.random() * (5001 - completedTasks)) + completedTasks;
+            document.getElementById("chaos").textContent = "Congratulations on " + chaos + " tasks completed (only " + completedTasks + " actually done, but who's counting?)";
+        }
+
+        function discombobulate() {
+            var message = document.getElementById("discombobulateMessage");
+            var flashCount = 0;
+            var flashInterval = setInterval(function () {
+                if (flashCount < 3) {
+                    message.innerHTML = "discombobulate <br><br> •–• discombobulate •_• <br><br> discombobulate<br><br>";
+                    message.style.display = "block";
+                    setTimeout(function () {
+                        message.style.display = "none";
+                    }, 250);
+                    flashCount++;
+                } else {
+                    clearInterval(flashInterval);
+                    message.innerHTML = "discombobulate = success";
+                    message.style.display = "block";
+                    setTimeout(function () {
+                        message.style.display = "none";
+                    }, 3000);
+                }
+            }, 500);
+        }
+
+        function recombobulate() {
+            var message = document.getElementById("discombobulateMessage");
+            message.innerHTML = "recombobulate = success";
+            message.style.display = "block";
+            setTimeout(function () {
+                message.style.display = "none";
+            }, 3000);
+        }
+
+        function launchMinesweeper() {
+            var minesweeperWindow = window.open("", "Minesweeper", "width=600,height=400");
+            minesweeperWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Fake Minesweeper</title>
+                    <style>
+                        body { background-color: black; color: #00ff00; font-family: 'Courier New', monospace; }
+                        #game { width: 500px; height: 300px; border: 1px solid #00ff00; margin: 20px auto; text-align: center; padding-top: 100px; }
+                    </style>
+                </head>
+                <body>
+                    <div id="game">
+                        <h1>Fake Minesweeper</h1>
+                        <p>Just kidding! Did you really think we'd implement a whole game?</p>
+                        <p>Now get back to your tasks! ...Or don't. Who cares?</p>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        function createMatrixRain() {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var leftRain = document.getElementById("leftRain");
+            var rightRain = document.getElementById("rightRain");
+
+            function addRainDrop(element) {
+                var drop = document.createElement("span");
+                drop.textContent = chars[Math.floor(Math.random() * chars.length)];
+                drop.style.left = Math.random() * 100 + "px";
+                drop.style.top = "-20px";
+                drop.style.position = "absolute";
+                drop.style.animation = "fall " + (Math.random() * 2 + 1) + "s linear";
+                element.appendChild(drop);
+
+                setTimeout(function () {
+                    drop.remove();
+                }, 3000);
+            }
+
+            setInterval(function () {
+                addRainDrop(leftRain);
+                addRainDrop(rightRain);
+            }, 50);
+        }
+
+        updateChaos();
+        createMatrixRain();
+    </script>
+</body>
+
+</html>
